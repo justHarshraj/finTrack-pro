@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack Pro - Financial Overview</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Light Mode */
+      --bg-app: #f4f4f5;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #f4f4f5;
+      --text-primary: #18181b;
+      --text-secondary: #71717a;
+      --border-color: #e4e4e7;
+      
+      --accent: #000000;
+      --accent-text: #ffffff;
+      
+      --success: #16a34a;
+      --danger: #dc2626;
+      
+      --icon-bg: #e0e7ff;
+      --icon-color: #4338ca;
+      
+      --nav-active-bg: #e0e7ff;
+      --nav-active-text: #4338ca;
+      --nav-hover-bg: #e4e4e7;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+      
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    .dark {
+      --bg-app: #09090b;
+      --bg-surface: #18181b;
+      --bg-sidebar: #09090b;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --border-color: #27272a;
+      
+      --accent: #ffffff;
+      --accent-text: #000000;
+      
+      --success: #22c55e;
+      --danger: #ef4444;
+      
+      --icon-bg: #3730a3;
+      --icon-color: #c7d2fe;
+      
+      --nav-active-bg: #3730a3;
+      --nav-active-text: #c7d2fe;
+      --nav-hover-bg: #27272a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Layout */
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 0 40px 40px 40px;
+    }
+
+    /* Sidebar Content */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .logo-icon {
+      color: var(--text-primary);
+    }
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .logo-text span {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-item:hover {
+      background-color: var(--nav-hover-bg);
+      color: var(--text-primary);
+    }
+    .nav-item.active {
+      background-color: var(--nav-active-bg);
+      color: var(--nav-active-text);
+    }
+
+    .add-btn-sidebar {
+      margin-top: auto;
+      background-color: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .add-btn-sidebar:hover { opacity: 0.9; transform: translateY(-1px); }
+    .add-btn-sidebar:active { transform: translateY(0); }
+
+    /* Topbar */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 32px;
+      gap: 24px;
+    }
+    .user-profile {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover {
+      background: var(--bg-surface);
+      border-color: var(--text-secondary);
+    }
+
+    /* Dashboard Content */
+    .page-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--icon-bg);
+      color: var(--icon-color);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .card-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .color-up { color: var(--success); }
+    .color-down { color: var(--danger); }
+
+    /* Middle Section */
+    .middle-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    /* Chart */
+    .chart-wrapper {
+      height: 280px;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Preferences */
+    .pref-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .pref-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .pref-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--text-secondary);
+      transition: .4s;
+      border-radius: 24px;
+      opacity: 0.5;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--success);
+      opacity: 1;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .btn-danger-outline {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      color: var(--danger);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 24px;
+      transition: all 0.2s;
+    }
+    .btn-danger-outline:hover {
+      background: rgba(220, 38, 38, 0.05);
+      border-color: var(--danger);
+    }
+
+    /* Table Section */
+    .table-panel {
+      margin-top: 24px;
+    }
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .search-wrap {
+      position: relative;
+      width: 300px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-sidebar);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--icon-color);
+    }
+    .filter-select {
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-sidebar);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border-color);
+    }
+    tr:last-child td { border-bottom: none; }
+    
+    .badge {
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg-sidebar);
+      color: var(--text-secondary);
+    }
+    .td-right { text-align: right; }
+    
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(220, 38, 38, 0.1);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: transform 0.3s;
+      border: 1px solid var(--border-color);
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h3 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .close-btn:hover { color: var(--text-primary); }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--icon-color);
+    }
+    .btn-submit {
+      width: 100%;
+      background: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12l10-8 10 8-10 8z"/><path d="M2 17l10 8 10-8"/><path d="M2 7l10 8 10-8"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>FinTrack Pro</h1>
+        <span>Enterprise Finance</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a class="nav-item active" id="nav-dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        Dashboard
+      </a>
+      <a class="nav-item" id="nav-settings" onclick="app.showSettingsAlert()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
+    </nav>
+
+    <button class="add-btn-sidebar" onclick="app.openModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      Add Transaction
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <header class="topbar">
+      <div class="user-profile">hr</div>
+      <button class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Logout
+      </button>
+    </header>
+
+    <div class="dashboard-content">
+      <div class="page-header">
+        <h2>Financial Overview</h2>
+        <p>Real-time tracking application</p>
+      </div>
+
+      <!-- Top Cards -->
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="18" height="6" rx="1"/><path d="M3 12V8a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4"/><path d="M12 15v.01"/></svg>
+          </div>
+          <div class="card-title">Current Balance</div>
+          <div class="card-value" id="stat-balance">$0.00</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div class="card-title">Income / Expense</div>
+          <div class="card-value color-up" id="stat-inc-exp">+$0.00</div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="card-title">Total Transactions</div>
+          <div class="card-value" id="stat-count">0</div>
+        </div>
+      </div>
+
+      <!-- Middle Grid -->
+      <div class="middle-grid">
+        <div class="panel">
+          <h3 class="panel-title">Cash Flow Analysis</h3>
+          <div class="chart-wrapper">
+            <canvas id="flowChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Preferences</h3>
+          <div class="pref-row">
+            <span class="pref-label">Dark Mode</span>
+            <label class="switch">
+              <input type="checkbox" id="pref-theme" onchange="app.toggleTheme()">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <button class="btn-danger-outline" onclick="app.resetData()">
+            🗑 Reset All Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Panel -->
+      <div class="panel table-panel">
+        <h3 class="panel-title">All Transactions</h3>
+        
+        <div class="table-controls">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search transactions..." onkeyup="app.renderTable()">
+          </div>
+          <select id="filter-select" class="filter-select" onchange="app.renderTable()">
+            <option value="All">All Transactions</option>
+            <option value="Income">Income Only</option>
+            <option value="Expense">Expense Only</option>
+          </select>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th class="td-right">Amount</th>
+                <th class="td-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody">
+              <!-- Rows via JS -->
+            </tbody>
+          </table>
+          <div id="tx-empty" class="empty-state" style="display: none;">
+            <p>No transactions found.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Add Transaction Modal -->
+  <div class="modal-overlay" id="add-modal" onclick="app.handleModalClick(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Transaction</h3>
+        <button class="close-btn" onclick="app.closeModal()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      
+      <form id="add-form" onsubmit="app.saveTransaction(event)">
+        <div class="form-group">
+          <label>Type</label>
+          <select id="tx-type" required onchange="app.updateCategoryOptions()">
+            <option value="Expense">Expense</option>
+            <option value="Income">Income</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" id="tx-desc" required placeholder="e.g. Amazon, Salary, Coffee">
+        </div>
+        
+        <div class="form-row form-group">
+          <div>
+            <label>Amount</label>
+            <input type="number" id="tx-amount" step="0.01" min="0.01" required placeholder="0.00">
+          </div>
+          <div>
+            <label>Date</label>
+            <input type="date" id="tx-date" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Category</label>
+          <select id="tx-category" required>
+            <option value="" disabled selected>Select a category</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-submit">Save Transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    const app = {
+      transactions: [],
+      chartInstance: null,
+      prefs: {
+        isDark: false
+      },
+      
+      categories: {
+        Expense: ['Food & Dining', 'Shopping', 'Recharge & Bills', 'Petrol & Auto', 'Utilities', 'Entertainment', 'Other'],
+        Income: ['Salary', 'Freelance', 'Investments', 'Gift', 'Other']
+      },
+
+      init() {
+        this.loadData();
+        this.applyTheme();
+        
+        document.getElementById('pref-theme').checked = this.prefs.isDark;
+        this.updateCategoryOptions();
+        this.masterRefresh();
+      },
+
+      loadData() {
+        try {
+          const storedTx = localStorage.getItem('fin_transactions');
+          if (storedTx) this.transactions = JSON.parse(storedTx);
+          
+          const storedPrefs = localStorage.getItem('fin_prefs');
+          if (storedPrefs) this.prefs = { ...this.prefs, ...JSON.parse(storedPrefs) };
+        } catch (e) {
+          console.error('Failed to load data:', e);
+          localStorage.removeItem('fin_transactions');
+          localStorage.removeItem('fin_prefs');
+        }
+      },
+      
+      persistData() {
+        localStorage.setItem('fin_transactions', JSON.stringify(this.transactions));
+      },
+      
+      savePreferences() {
+        localStorage.setItem('fin_prefs', JSON.stringify(this.prefs));
+      },
+      
+      resetData() {
+        if(confirm("Are you sure you want to wipe all transaction data? This action cannot be undone.")) {
+          this.transactions = [];
+          this.persistData();
+          this.masterRefresh();
+        }
+      },
+
+      showSettingsAlert() {
+        alert("Preferences are now embedded in the Dashboard view!");
+      },
+
+      toggleTheme() {
+        this.prefs.isDark = document.getElementById('pref-theme').checked;
+        this.savePreferences();
+        this.applyTheme();
+      },
+      
+      applyTheme() {
+        if (this.prefs.isDark) {
+          document.body.classList.add('dark');
+        } else {
+          document.body.classList.remove('dark');
+        }
+        if (this.chartInstance) this.renderChart();
+      },
+
+      formatMoney(amount) {
+        return '$' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      },
+      
+      formatDate(dateString) {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      },
+
+      saveTransaction(e) {
+        e.preventDefault();
+        
+        const type = document.getElementById('tx-type').value;
+        const amountStr = document.getElementById('tx-amount').value;
+        const desc = document.getElementById('tx-desc').value;
+        const date = document.getElementById('tx-date').value;
+        const category = document.getElementById('tx-category').value;
+        
+        if (!type || !amountStr || !desc || !date || !category) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        const amount = parseFloat(amountStr);
+        
+        const tx = {
+          id: Date.now().toString(),
+          type, amount, desc, date, category
+        };
+        
+        this.transactions.push(tx);
+        this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        this.persistData();
+        this.closeModal();
+        this.masterRefresh();
+      },
+      
+      deleteTransaction(id) {
+        this.transactions = this.transactions.filter(t => t.id !== id);
+        this.persistData();
+        this.masterRefresh();
+      },
+
+      openModal() {
+        document.getElementById('add-modal').classList.add('active');
+        document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
+        if(!document.getElementById('tx-category').value) {
+          this.updateCategoryOptions();
+        }
+      },
+      
+      closeModal() {
+        document.getElementById('add-modal').classList.remove('active');
+        document.getElementById('add-form').reset();
+      },
+      
+      handleModalClick(e) {
+        if (e.target.id === 'add-modal') {
+          this.closeModal();
+        }
+      },
+      
+      updateCategoryOptions() {
+        const type = document.getElementById('tx-type').value;
+        const catSelect = document.getElementById('tx-category');
+        catSelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
+        
+        this.categories[type].forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          catSelect.appendChild(opt);
+        });
+      },
+
+      updateCards() {
+        let income = 0;
+        let expense = 0;
+        
+        this.transactions.forEach(t => {
+          if (t.type === 'Income') income += t.amount;
+          else expense += t.amount;
+        });
+        
+        const balance = income - expense;
+        
+        document.getElementById('stat-balance').innerText = this.formatMoney(balance);
+        
+        const incExpEl = document.getElementById('stat-inc-exp');
+        if (balance >= 0) {
+          incExpEl.innerText = '+' + this.formatMoney(income);
+          incExpEl.className = 'card-value color-up';
+        } else {
+          incExpEl.innerText = '-' + this.formatMoney(expense);
+          incExpEl.className = 'card-value color-down';
+        }
+        
+        document.getElementById('stat-count').innerText = this.transactions.length;
+      },
+
+      renderTable() {
+        const tbody = document.getElementById('tx-tbody');
+        const emptyState = document.getElementById('tx-empty');
+        tbody.innerHTML = '';
+        
+        const filterType = document.getElementById('filter-select').value;
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        
+        const filtered = this.transactions.filter(t => {
+          const matchesType = filterType === 'All' || t.type === filterType;
+          const matchesSearch = t.desc.toLowerCase().includes(searchTerm) || t.category.toLowerCase().includes(searchTerm);
+          return matchesType && matchesSearch;
+        });
+        
+        if (filtered.length === 0) {
+          emptyState.style.display = 'block';
+          tbody.parentElement.style.display = 'none';
+        } else {
+          emptyState.style.display = 'none';
+          tbody.parentElement.style.display = 'table';
+          
+          filtered.forEach(t => {
+            const isIncome = t.type === 'Income';
+            const sign = isIncome ? '+' : '-';
+            const colorClass = isIncome ? 'color-up' : 'color-down';
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${this.formatDate(t.date)}</td>
+              <td>${t.desc}</td>
+              <td><span class="badge">${t.category}</span></td>
+              <td class="td-right ${colorClass}" style="font-weight: 600;">
+                ${sign}${this.formatMoney(t.amount)}
+              </td>
+              <td class="td-right">
+                <button class="btn-action" onclick="app.deleteTransaction('${t.id}')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      },
+
+      renderChart() {
+        const ctx = document.getElementById('flowChart').getContext('2d');
+        if (this.chartInstance) this.chartInstance.destroy();
+        
+        const monthlyData = {};
+        const chronosTx = [...this.transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        chronosTx.forEach(t => {
+          const d = new Date(t.date);
+          const monthYear = d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+          if (!monthlyData[monthYear]) monthlyData[monthYear] = { income: 0, expense: 0 };
+          
+          if (t.type === 'Income') monthlyData[monthYear].income += t.amount;
+          else monthlyData[monthYear].expense += t.amount;
+        });
+        
+        const labels = Object.keys(monthlyData);
+        const incomeData = labels.map(l => monthlyData[l].income);
+        const expenseData = labels.map(l => monthlyData[l].expense);
+        
+        const style = getComputedStyle(document.body);
+        const textColor = style.getPropertyValue('--text-secondary').trim();
+        const gridColor = style.getPropertyValue('--border-color').trim();
+        const successColor = style.getPropertyValue('--success').trim();
+        const dangerColor = style.getPropertyValue('--danger').trim();
+
+        this.chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels.length ? labels : ['No Data'],
+            datasets: [
+              {
+                label: 'Income',
+                data: incomeData.length ? incomeData : [0],
+                backgroundColor: successColor,
+                borderRadius: 4
+              },
+              {
+                label: 'Expense',
+                data: expenseData.length ? expenseData : [0],
+                backgroundColor: dangerColor,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: textColor, font: { family: 'Inter' } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (context) => `${context.dataset.label}: ${this.formatMoney(context.raw)}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: textColor, font: { family: 'Inter' } }
+              },
+              y: {
+                grid: { color: gridColor },
+                ticks: {
+                  color: textColor, font: { family: 'Inter' },
+                  callback: (val) => this.formatMoney(val)
+                },
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      },
+
+      masterRefresh() {
+        this.updateCards();
+        this.renderTable();
+        this.renderChart();
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      app.init();
+    });
+  </script>
+</body>
+</html>
