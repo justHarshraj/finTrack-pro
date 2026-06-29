@@ -1,9 +1,4 @@
-/* ============================================
-   FinTrack Pro - Application Logic
-   ============================================ */
-
 const app = {
-  // ---- State ----
   transactions: [],
   chartInstance: null,
   categoryChartInstance: null,
@@ -23,11 +18,6 @@ const app = {
     Expense: ['Food & Dining', 'Shopping', 'Recharge & Bills', 'Petrol & Auto', 'Utilities', 'Entertainment', 'Other'],
     Income: ['Salary', 'Freelance', 'Investments', 'Gift', 'Other']
   },
-
-
-  /* =============================================
-     Initialization & Auth
-     ============================================= */
 
   init() {
     this.loadData();
@@ -92,11 +82,6 @@ const app = {
     this.toast('Logged out successfully.', 'info');
   },
 
-
-  /* =============================================
-     Data Persistence
-     ============================================= */
-
   loadData() {
     try {
       const storedTx = localStorage.getItem('fin_transactions');
@@ -119,11 +104,6 @@ const app = {
     localStorage.setItem('fin_prefs', JSON.stringify(this.prefs));
   },
 
-
-  /* =============================================
-     Navigation
-     ============================================= */
-
   showPage(pageId) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -131,7 +111,6 @@ const app = {
     document.getElementById(`view-${pageId}`).classList.add('active');
     document.getElementById(`nav-${pageId}`).classList.add('active');
 
-    // Re-render charts when switching to dashboard (fixes canvas sizing)
     if (pageId === 'dashboard') {
       setTimeout(() => {
         this.renderChart();
@@ -139,11 +118,6 @@ const app = {
       }, 50);
     }
   },
-
-
-  /* =============================================
-     Profile & Theme
-     ============================================= */
 
   saveProfile(e) {
     e.preventDefault();
@@ -172,15 +146,9 @@ const app = {
     } else {
       document.body.classList.remove('dark');
     }
-    // Re-render charts to pick up new theme colors
     if (this.chartInstance) this.renderChart();
     if (this.categoryChartInstance) this.renderCategoryChart();
   },
-
-
-  /* =============================================
-     Formatting Utilities
-     ============================================= */
 
   formatMoney(amount) {
     const symbol = this.currencySymbols[this.prefs.currency] || '$';
@@ -190,7 +158,6 @@ const app = {
   },
 
   formatDate(dateString) {
-    // Parse as local date to avoid timezone shift
     const parts = dateString.split('-');
     const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -202,11 +169,6 @@ const app = {
     div.textContent = str;
     return div.innerHTML;
   },
-
-
-  /* =============================================
-     Transaction CRUD
-     ============================================= */
 
   saveTransaction(e) {
     e.preventDefault();
@@ -225,14 +187,12 @@ const app = {
     const amount = parseFloat(amountStr);
 
     if (this.editingId) {
-      // ---- Update existing transaction ----
       const idx = this.transactions.findIndex(t => t.id === this.editingId);
       if (idx !== -1) {
         this.transactions[idx] = { id: this.editingId, type, amount, desc, date, category };
       }
       this.toast('Transaction updated successfully.', 'success');
     } else {
-      // ---- Create new transaction ----
       const tx = {
         id: Date.now().toString(),
         type, amount, desc, date, category
@@ -277,11 +237,6 @@ const app = {
     );
   },
 
-
-  /* =============================================
-     Modal Management
-     ============================================= */
-
   openModal() {
     this.editingId = null;
     document.getElementById('modal-title').textContent = 'Add Transaction';
@@ -319,11 +274,6 @@ const app = {
     });
   },
 
-
-  /* =============================================
-     Stats Cards
-     ============================================= */
-
   updateCards() {
     let income = 0;
     let expense = 0;
@@ -339,14 +289,12 @@ const app = {
     balanceEl.innerText = this.formatMoney(balance);
     balanceEl.className = balance >= 0 ? 'card-value color-up' : 'card-value color-down';
 
-    // Show income and expense breakdown
     const incExpEl = document.getElementById('stat-inc-exp');
     incExpEl.innerHTML = `<span class="color-up">+${this.formatMoney(income)}</span> <span style="color:var(--text-secondary);font-size:16px;">/</span> <span class="color-down">-${this.formatMoney(expense)}</span>`;
     incExpEl.className = 'card-value';
 
     document.getElementById('stat-count').innerText = this.transactions.length;
 
-    // This month spending
     const now = new Date();
     const thisMonthExpense = this.transactions
       .filter(t => {
@@ -361,11 +309,6 @@ const app = {
     monthEl.innerText = this.formatMoney(thisMonthExpense);
     monthEl.className = thisMonthExpense > 0 ? 'card-value color-down' : 'card-value';
   },
-
-
-  /* =============================================
-     Table Rendering
-     ============================================= */
 
   renderTable() {
     const tbody = document.getElementById('tx-tbody');
@@ -434,11 +377,6 @@ const app = {
     this.renderTable();
     this.toast('Filters cleared.', 'info');
   },
-
-
-  /* =============================================
-     Charts
-     ============================================= */
 
   renderChart() {
     const canvas = document.getElementById('flowChart');
@@ -591,11 +529,6 @@ const app = {
     });
   },
 
-
-  /* =============================================
-     Toast Notifications
-     ============================================= */
-
   toast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -615,24 +548,17 @@ const app = {
 
     container.appendChild(toast);
 
-    // Trigger slide-in animation
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         toast.classList.add('show');
       });
     });
 
-    // Auto dismiss
     setTimeout(() => {
       toast.classList.remove('show');
       toast.addEventListener('transitionend', () => toast.remove(), { once: true });
     }, 3500);
   },
-
-
-  /* =============================================
-     Confirm Dialog
-     ============================================= */
 
   showConfirm(title, message, callback) {
     this.confirmCallback = callback;
@@ -660,11 +586,6 @@ const app = {
     }
   },
 
-
-  /* =============================================
-     Reset Data
-     ============================================= */
-
   confirmReset() {
     this.showConfirm(
       'Reset All Data',
@@ -677,11 +598,6 @@ const app = {
       }
     );
   },
-
-
-  /* =============================================
-     CSV Export
-     ============================================= */
 
   exportCSV() {
     if (this.transactions.length === 0) {
@@ -702,11 +618,6 @@ const app = {
     this.downloadFile(csv, 'fintrack_transactions.csv', 'text/csv');
     this.toast('Transactions exported as CSV.', 'success');
   },
-
-
-  /* =============================================
-     JSON Backup / Restore
-     ============================================= */
 
   exportJSON() {
     const data = {
@@ -763,13 +674,8 @@ const app = {
       }
     };
     reader.readAsText(file);
-    e.target.value = ''; // Reset so same file can be re-selected
+    e.target.value = '';
   },
-
-
-  /* =============================================
-     Utility
-     ============================================= */
 
   downloadFile(content, filename, mimeType) {
     const blob = new Blob([content], { type: mimeType });
@@ -783,19 +689,12 @@ const app = {
     URL.revokeObjectURL(url);
   },
 
-
-  /* =============================================
-     Keyboard Shortcuts
-     ============================================= */
-
   bindKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
-      // Ctrl/Cmd + N → New Transaction
       if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
         e.preventDefault();
         if (this.isLoggedIn) this.openModal();
       }
-      // Escape → Close open modals (check if any are active first)
       if (e.key === 'Escape') {
         if (document.getElementById('confirm-dialog').classList.contains('active')) {
           this.cancelConfirm();
@@ -806,11 +705,6 @@ const app = {
     });
   },
 
-
-  /* =============================================
-     Master Refresh
-     ============================================= */
-
   masterRefresh() {
     this.updateCards();
     this.renderTable();
@@ -819,8 +713,6 @@ const app = {
   }
 };
 
-
-// ---- Boot ----
 window.addEventListener('DOMContentLoaded', () => {
   app.init();
 });

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinTrack Pro - Financial Overview</title>
   <meta name="description" content="FinTrack Pro - Enterprise-grade personal finance tracking application">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +12,6 @@
 </head>
 <body>
 
-  <!-- ===== Sidebar ===== -->
   <aside class="sidebar">
     <div class="logo-container">
       <div class="logo-icon">
@@ -45,8 +43,6 @@
     </button>
   </aside>
 
-
-  <!-- ===== Main Content ===== -->
   <main class="main-content">
 
     <header class="topbar">
@@ -57,8 +53,6 @@
       </button>
     </header>
 
-
-    <!-- ===== Login View ===== -->
     <div id="view-login" class="view-section">
       <div class="login-card">
         <div class="logo-icon" style="margin-bottom: 16px; justify-content: center; display: flex; color: var(--icon-color);">
@@ -82,8 +76,6 @@
       </div>
     </div>
 
-
-    <!-- ===== Dashboard View ===== -->
     <div id="view-dashboard" class="view-section">
       <div class="dashboard-content">
         <div class="page-header">
@@ -91,7 +83,6 @@
           <p>Real-time tracking application</p>
         </div>
 
-        <!-- Stat Cards -->
         <div class="cards-grid">
           <div class="card">
             <div class="card-icon">
@@ -126,7 +117,6 @@
           </div>
         </div>
 
-        <!-- Charts Grid -->
         <div class="middle-grid">
           <div class="panel">
             <h3 class="panel-title">Cash Flow Analysis</h3>
@@ -143,7 +133,6 @@
           </div>
         </div>
 
-        <!-- Transactions Table -->
         <div class="panel table-panel">
           <div class="table-header">
             <h3 class="panel-title" style="margin-bottom: 0;">All Transactions</h3>
@@ -181,9 +170,7 @@
                   <th class="td-right">Actions</th>
                 </tr>
               </thead>
-              <tbody id="tx-tbody">
-                <!-- Rows rendered by JS -->
-              </tbody>
+              <tbody id="tx-tbody"></tbody>
             </table>
           </div>
           <div id="tx-empty" class="empty-state" style="display:none;">
@@ -194,8 +181,6 @@
       </div>
     </div>
 
-
-    <!-- ===== Settings View ===== -->
     <div id="view-settings" class="view-section">
       <div class="page-header">
         <h2>Settings</h2>
@@ -203,7 +188,6 @@
       </div>
 
       <div class="settings-grid">
-        <!-- Profile -->
         <div class="panel">
           <h3 class="panel-title" style="margin-bottom: 24px;">Profile Details</h3>
           <form onsubmit="app.saveProfile(event)">
@@ -226,7 +210,6 @@
           </form>
         </div>
 
-        <!-- Appearance -->
         <div class="panel">
           <h3 class="panel-title" style="margin-bottom: 0;">Appearance</h3>
           <div class="pref-row">
@@ -241,7 +224,6 @@
           </div>
         </div>
 
-        <!-- Data Management -->
         <div class="panel">
           <h3 class="panel-title">Data Management</h3>
           <div class="data-actions-grid">
@@ -269,8 +251,6 @@
 
   </main>
 
-
-  <!-- ===== Add / Edit Transaction Modal ===== -->
   <div class="modal-overlay" id="add-modal" onclick="app.handleModalClick(event)">
     <div class="modal-content">
       <div class="modal-header">
@@ -317,8 +297,6 @@
     </div>
   </div>
 
-
-  <!-- ===== Confirm Dialog ===== -->
   <div class="modal-overlay" id="confirm-dialog" onclick="app.handleConfirmClick(event)">
     <div class="modal-content confirm-content">
       <div class="confirm-icon">
@@ -333,12 +311,8 @@
     </div>
   </div>
 
-
-  <!-- ===== Toast Container ===== -->
   <div id="toast-container"></div>
 
-
-  <!-- ===== Scripts ===== -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="app.js"></script>
 
